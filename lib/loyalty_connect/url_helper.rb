@@ -6,27 +6,27 @@ module LoyaltyConnect
     end
 
     def rewards
-      "/api/1.0.0/consumer/#{@consumer_id}/rewards"
+      "/api/1.0.0/consumers/#{@consumer_id}/rewards"
     end
 
     def transactions
-      "/api/1.0.0/consumer/#{@consumer_id}/transactions"
+      "/api/1.0.0/consumers/#{@consumer_id}/transactions"
     end
 
     def cards
-      "/api/1.0.0/consumer/#{@consumer_id}/credit_cards"
+      "/api/1.0.0/consumers/#{@consumer_id}/credit_cards"
     end
 
     def reward id_param
-      "/api/1.0.0/consumer/#{@consumer_id}/rewards/#{id_param}"
+      "/api/1.0.0/consumers/#{@consumer_id}/rewards/#{id_param}"
     end
 
     def transaction id_param
-      "/api/1.0.0/consumer/#{@consumer_id}/transactions/#{id_param}"
+      "/api/1.0.0/consumers/#{@consumer_id}/transactions/#{id_param}"
     end
 
     def card id_param
-      "/api/1.0.0/consumer/#{@consumer_id}/credit_cards/#{id_param}"
+      "/api/1.0.0/consumers/#{@consumer_id}/credit_cards/#{id_param}"
     end
 
   end

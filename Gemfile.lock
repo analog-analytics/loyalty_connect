@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    loyalty_connect (0.0.1)
+    loyalty_connect (0.0.2)
       oauth2 (= 0.4.1)
 
 GEM
