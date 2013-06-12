@@ -1,0 +1,32 @@
+PATH
+  remote: .
+  specs:
+    loyalty_connect (0.0.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.2.8)
+    faraday (0.6.1)
+      addressable (~> 2.2.4)
+      multipart-post (~> 1.1.0)
+      rack (>= 1.1.0, < 2)
+      rack (>= 1.1.0, < 2)
+    minitest (4.7.4)
+    multi_json (1.7.6)
+    multipart-post (1.1.5)
+    oauth2 (0.4.1)
+      faraday (~> 0.6.1)
+      multi_json (>= 0.0.5)
+    rack (1.5.2)
+    rake (10.0.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.3)
+  loyalty_connect!
+  minitest (~> 4.7.4)
+  oauth2 (~> 0.4.1)
+  rake (~> 10.0.4)
