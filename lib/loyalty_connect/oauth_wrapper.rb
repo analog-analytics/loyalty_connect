@@ -11,9 +11,9 @@ module LoyaltyConnect
       @oauth_token ||= create_oauth_token
     end
 
-    private
-
     attr_reader :configuration
+
+    private
 
     def oauth_client
       @oauth_client ||= create_oauth_client

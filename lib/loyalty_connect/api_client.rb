@@ -6,6 +6,8 @@ module LoyaltyConnect
       @oauth_token = oauth_token
     end
 
+    attr_reader :oauth_token
+
     def get url
       oauth_token.get url
     rescue OAuth2::HTTPError => e
@@ -14,8 +16,5 @@ module LoyaltyConnect
       nil
     end
 
-    private
-
-    attr_reader :oauth_token
   end
 end

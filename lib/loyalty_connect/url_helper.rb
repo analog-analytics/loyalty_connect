@@ -1,32 +1,50 @@
 module LoyaltyConnect
   class UrlHelper
 
-    def initialize consumer_model
-      @consumer_id = consumer_model.loyalty_id
+    def initialize consumer_id
+      @consumer_id = consumer_id
     end
 
     def rewards
-      "/api/1.0.0/consumers/#{@consumer_id}/rewards"
+      path 'rewards'
     end
 
     def transactions
-      "/api/1.0.0/consumers/#{@consumer_id}/transactions"
+      path 'transactions'
     end
 
     def cards
-      "/api/1.0.0/consumers/#{@consumer_id}/credit_cards"
+      path 'credit_cards'
     end
 
     def reward id_param
-      "/api/1.0.0/consumers/#{@consumer_id}/rewards/#{id_param}"
+      path 'rewards', id_param
     end
 
     def transaction id_param
-      "/api/1.0.0/consumers/#{@consumer_id}/transactions/#{id_param}"
+      path 'transactions', id_param
     end
 
     def card id_param
-      "/api/1.0.0/consumers/#{@consumer_id}/credit_cards/#{id_param}"
+      path 'credit_cards', id_param
+    end
+
+    def consumer_id
+      if @consumer_id.respond_to? :call
+        @consumer_id.call
+      else
+        @consumer_id
+      end
+    end
+
+    private
+
+    def path *segments
+      ['', 'api', version, 'consumers', consumer_id, *segments].join('/')
+    end
+
+    def version
+      "1.0.0"
     end
 
   end

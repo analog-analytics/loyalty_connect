@@ -14,8 +14,9 @@ module LoyaltyConnect
     attr_reader :server, :client_id, :client_secret, :username, :password
 
     def connection_for consumer_model
-      url_helper = UrlHelper.new consumer_model
-      Connection.new url_helper, ApiClient.new(oauth_token)
+      url_helper = UrlHelper.new(consumer_model)
+      api_client = ApiClient.new(oauth_token)
+      Connection.new url_helper, api_client
     end
 
     private

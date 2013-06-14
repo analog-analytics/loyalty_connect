@@ -5,11 +5,7 @@ module LoyaltyConnect
   describe UrlHelper do
 
       before do
-        consumer = Class.new do
-          def self.loyalty_id
-            18
-          end
-        end
+        consumer = lambda { 18 }
         @url_helper = UrlHelper.new consumer
       end
 
