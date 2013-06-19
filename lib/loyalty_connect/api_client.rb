@@ -9,11 +9,21 @@ module LoyaltyConnect
     attr_reader :oauth_token
 
     def get url
-      oauth_token.get url
+      oauth_token.get url, {}, headers
     rescue OAuth2::HTTPError => e
       return nil if e.message[/404/]
       #TODO: Need to add logging here. Assuming that these other errors are needed
       nil
+    end
+
+    private
+
+    def headers
+      { 'X-API-Version' => version }
+    end
+
+    def version
+      '1.0.0'
     end
 
   end

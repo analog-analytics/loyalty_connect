@@ -40,11 +40,7 @@ module LoyaltyConnect
     private
 
     def path *segments
-      ['', 'api', version, 'consumers', consumer_id, *segments].join('/')
-    end
-
-    def version
-      "1.0.0"
+      ['', 'api', 'consumers', consumer_id, *segments].join('/')
     end
 
   end
