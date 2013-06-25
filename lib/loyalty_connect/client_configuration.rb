@@ -5,9 +5,11 @@ module LoyaltyConnect
 
     def initialize params={}
       options = params || Hash.new
-      defaults.merge(options).each do |k,v|
-        self.send("#{k}=", v.to_s)
-      end
+      @server = options.fetch('server') { '' }
+      @client_id = options.fetch('client_id') { '' }
+      @client_secret = options.fetch('client_secret') { '' }
+      @username = options.fetch('username') { '' }
+      @password = options.fetch('password') { '' }
     end
 
     attr_accessor :server, :client_id, :client_secret, :username, :password
