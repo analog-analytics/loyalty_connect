@@ -33,5 +33,9 @@ module LoyaltyConnect
         assert_equal "/api/consumers/18/credit_cards/17", @url_helper.card(17)
       end
 
+      it "creates activity URLs" do
+        assert_equal "/api/consumers/18/activity", @url_helper.activity
+      end
+
     end
   end

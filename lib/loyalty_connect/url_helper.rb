@@ -17,6 +17,10 @@ module LoyaltyConnect
       path 'credit_cards'
     end
 
+    def activity
+      path 'activity'
+    end
+
     def reward id_param
       path 'rewards', id_param
     end

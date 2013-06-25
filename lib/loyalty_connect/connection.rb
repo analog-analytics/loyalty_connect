@@ -20,6 +20,10 @@ module LoyaltyConnect
       api_client.get(url_helper.cards) || []
     end
 
+    def activity
+      api_client.get(url_helper.activity) || []
+    end
+
     def reward_detail id_param
       api_client.get(url_helper.reward(id_param)) || Hash.new
     end

@@ -45,6 +45,14 @@ module LoyaltyConnect
         assert_equal [], cards
       end
 
+      it "returns an empty array if nil from api for activity" do
+        def @mock_url_helper.activity
+          nil
+        end
+        activity = @connection.activity
+        assert_equal [], activity
+      end
+
       it "returns an empty hash if nil from api for reward details" do
         def @mock_url_helper.reward id_param
           nil
