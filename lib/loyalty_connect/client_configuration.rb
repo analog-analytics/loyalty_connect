@@ -16,14 +16,14 @@ module LoyaltyConnect
 
     def connection_for consumer_model
       url_helper = UrlHelper.new(consumer_model)
-      api_client = ApiClient.new(oauth_token)
+      api_client = ApiClient.new(oauth_wrapper)
       Connection.new url_helper, api_client
     end
 
     private
 
-    def oauth_token
-      @oauth_token ||= OauthWrapper.new(self).oauth_token
+    def oauth_wrapper
+      @oauth_wrapper ||= OauthWrapper.new(self)
     end
 
     def defaults

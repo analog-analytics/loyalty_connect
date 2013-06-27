@@ -31,13 +31,8 @@ module LoyaltyConnect
         expected = Object.new
         consumer_model = Object.new
         fake_wrapper = Object.new
-        fake_token = Object.new
         fake_helper = Object.new
         fake_accessor = Object.new
-        class << fake_wrapper
-          attr_accessor :oauth_token
-        end
-        fake_wrapper.oauth_token = fake_token
         wrapper_validate = lambda do |config|
           assert_same configuration, config
           fake_wrapper
@@ -46,8 +41,8 @@ module LoyaltyConnect
           assert_same consumer_model, model
           fake_helper
         end
-        client_validate = lambda do |oauth_token|
-          assert_same fake_token, oauth_token
+        client_validate = lambda do |oauth_wrapper|
+          assert_same fake_wrapper, oauth_wrapper
           fake_accessor
         end
         connection_validate = lambda do |url_helper, app_accessor|
