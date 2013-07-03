@@ -26,14 +26,5 @@ module LoyaltyConnect
       @oauth_wrapper ||= OauthWrapper.new(self)
     end
 
-    def defaults
-      {
-        'server' => '',
-        'client_id' => '',
-        'client_secret' => '',
-        'username' => '',
-        'password' => ''
-      }
-    end
   end
 end

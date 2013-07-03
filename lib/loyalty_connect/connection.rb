@@ -21,7 +21,7 @@ module LoyaltyConnect
     end
 
     def activity
-      api_client.get(url_helper.activity) || []
+      api_client.get(url_helper.activity) || Hash.new
     end
 
     def reward_detail id_param

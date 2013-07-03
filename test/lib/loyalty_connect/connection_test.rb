@@ -45,12 +45,12 @@ module LoyaltyConnect
         assert_equal [], cards
       end
 
-      it "returns an empty array if nil from api for activity" do
+      it "returns an empty hash if nil from api for activity" do
         def @mock_url_helper.activity
           nil
         end
         activity = @connection.activity
-        assert_equal [], activity
+        assert_kind_of Hash, activity
       end
 
       it "returns an empty hash if nil from api for reward details" do
@@ -103,6 +103,13 @@ module LoyaltyConnect
         @mock_url_helper.expect :cards, "blah1"
         cards = @connection.cards
         assert_equal [@expected], cards
+      end
+
+      it "return a hash of activity" do
+        @mock_api_client.expect :get, @expected, ["blah6"]
+        @mock_url_helper.expect :activity, "blah6"
+        activity = @connection.activity
+        assert_equal @expected, activity
       end
 
       it "returns what reward details api reward detail" do
