@@ -1,9 +1,12 @@
 module LoyaltyConnect
   class UrlHelper
 
-    def initialize consumer_id
+    def initialize consumer_id, should_translate=true
       @consumer_id = consumer_id
+      @should_translate = should_translate
     end
+
+    attr_reader :should_translate
 
     def rewards
       path 'rewards'
@@ -34,7 +37,7 @@ module LoyaltyConnect
     end
 
     def consumer_id
-      if @consumer_id.respond_to? :call
+      @cached_consumer_id ||= if @consumer_id.respond_to? :call
         @consumer_id.call
       else
         @consumer_id
@@ -44,7 +47,8 @@ module LoyaltyConnect
     private
 
     def path *segments
-      ['', 'api', 'consumers', consumer_id, *segments].join('/')
+      path = ['', 'api', 'consumers', consumer_id, *segments].join('/')
+      path.concat('?translate=1') if should_translate
     end
 
   end
