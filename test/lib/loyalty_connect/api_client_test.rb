@@ -13,7 +13,7 @@ module LoyaltyConnect
       stub_oauth_wrapper = create_oauth_wrapper(stub_oauth_token)
       client = ApiClient.new stub_oauth_wrapper
       result = client.get "blah"
-      assert_equal :something, result
+      assert_equal "something", result
     end
 
     it "should return nil if get error from get" do

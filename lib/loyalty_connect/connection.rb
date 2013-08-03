@@ -1,54 +1,59 @@
-require 'json'
-
 module LoyaltyConnect
   class Connection
 
-    def initialize url_helper, api_client, result_parser = JSON
-      @url_helper = url_helper
-      @api_client = api_client
-      @result_parser = result_parser
+    class << self
+      def create consumer_id, options={}
+        url_helper = UrlHelper.new(consumer_id)
+        oauth_wrapper = OauthWrapper.new(options)
+        api_client = ParsedApiClient.new(oauth_wrapper)
+        Connection.new url_helper, api_client
+      end
     end
 
-    attr_reader :url_helper, :api_client, :result_parser
+    def initialize url_helper, api_client
+      @url_helper = url_helper
+      @api_client = api_client
+    end
+
+    attr_reader :url_helper, :api_client
 
     def rewards
-      api_fetch(url_helper.rewards) { [] }
+      api_client.get(url_helper.rewards, Default_array_result)
     end
 
     def transactions
-      api_fetch(url_helper.transactions) { [] }
+      api_client.get(url_helper.transactions, Default_array_result)
     end
 
     def cards
-      api_fetch(url_helper.cards) { [] }
+      api_client.get(url_helper.cards, Default_array_result)
     end
 
     def activity
-      api_fetch(url_helper.activity) { Hash.new }
+      api_client.get(url_helper.activity, Default_hash_result)
     end
 
     def reward_detail id_param
-      api_fetch(url_helper.reward(id_param)) { Hash.new }
+      api_client.get(url_helper.reward(id_param), Default_hash_result)
     end
 
     def transaction_detail id_param
-      api_fetch(url_helper.transaction(id_param)) { Hash.new }
+      api_client.get(url_helper.transaction(id_param), Default_hash_result)
     end
 
     def card_detail id_param
-      api_fetch(url_helper.card(id_param)) { Hash.new }
+      api_client.get(url_helper.card(id_param), Default_hash_result)
+    end
+
+    def register_user options={}
+      sent_options = { :consumer => options }
+      api_client.post(url_helper.create_user, sent_options, Default_hash_result)
     end
 
     private
 
-    def api_fetch(path, &default)
-      result = api_client.get(path).to_s.strip
-      if result.empty?
-        default.call
-      else
-        result_parser.parse(result)
-      end
-    end
+    Default_array_result = lambda { '[]' }
+    Default_hash_result = lambda { '{}' }
 
   end
 end

@@ -26,7 +26,7 @@ module LoyaltyConnect
         assert_equal "/api/consumers/18/rewards/15?translate=1", @url_helper.reward(15)
       end
 
-      it "creates transaction  detail URLs" do
+      it "creates transaction detail URLs" do
         assert_equal "/api/consumers/18/transactions/16?translate=1", @url_helper.transaction(16)
       end
 
@@ -36,6 +36,10 @@ module LoyaltyConnect
 
       it "creates activity URLs" do
         assert_equal "/api/consumers/18/activity?translate=1", @url_helper.activity
+      end
+
+      it "creates create_user URLs" do
+        assert_equal "/api/consumers?translate=18", @url_helper.create_user
       end
     end
 

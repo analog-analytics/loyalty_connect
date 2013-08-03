@@ -3,15 +3,21 @@ require 'oauth2'
 module LoyaltyConnect
   class OauthWrapper
 
-    def initialize client_configuration
-      @configuration = client_configuration
+    def initialize client_configuration, client_class = OAuth2::Client
+      @client_class = client_class
+      options = client_configuration || Hash.new
+      @server = options['server']
+      @client_id = options['client_id']
+      @client_secret = options['client_secret']
+      @username = options['username']
+      @password = options['password']
     end
+
+    attr_accessor :server, :client_id, :client_secret, :username, :password, :client_class
 
     def oauth_token
       @oauth_token ||= create_oauth_token
     end
-
-    attr_reader :configuration
 
     private
 
@@ -20,15 +26,19 @@ module LoyaltyConnect
     end
 
     def create_oauth_client
-      OAuth2::Client.new(
-        configuration.client_id,
-        configuration.client_secret,
-        :site => configuration.server,
+      client_class.new(
+        client_id,
+        client_secret,
+        :site => server,
         :access_token_path => "/oauth/token")
     end
 
+    def password_workflow
+      oauth_client.password
+    end
+
     def create_oauth_token
-      token = oauth_client.password.get_access_token(configuration.username, configuration.password)
+      token = password_workflow.get_access_token(username, password)
       token.token_param = 'access_token'
       token
     end

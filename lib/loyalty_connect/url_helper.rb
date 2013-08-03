@@ -9,31 +9,36 @@ module LoyaltyConnect
     attr_reader :should_translate
 
     def rewards
-      path 'rewards'
+      path consumer_id, 'rewards'
     end
 
     def transactions
-      path 'transactions'
+      path consumer_id, 'transactions'
     end
 
     def cards
-      path 'credit_cards'
+      path consumer_id, 'credit_cards'
     end
 
     def activity
-      path 'activity'
+      path consumer_id, 'activity'
     end
 
     def reward id_param
-      path 'rewards', id_param
+      path consumer_id, 'rewards', id_param
     end
 
     def transaction id_param
-      path 'transactions', id_param
+      path consumer_id, 'transactions', id_param
     end
 
     def card id_param
-      path 'credit_cards', id_param
+      path consumer_id, 'credit_cards', id_param
+    end
+
+    def create_user
+      create_path = url_path
+      create_path.concat("?translate=#{consumer_id}") if should_translate
     end
 
     def consumer_id
@@ -47,8 +52,12 @@ module LoyaltyConnect
     private
 
     def path *segments
-      path = ['', 'api', 'consumers', consumer_id, *segments].join('/')
+      path = url_path(segments)
       path.concat('?translate=1') if should_translate
+    end
+
+    def url_path *segments
+      ['', 'api', 'consumers', *segments].join('/')
     end
 
   end

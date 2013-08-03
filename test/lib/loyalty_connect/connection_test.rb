@@ -2,177 +2,227 @@ require "test_helper"
 require "loyalty_connect"
 
 module LoyaltyConnect
-  describe "default returns" do
-    before do
-      api_client = Object.new
-      def api_client.get(url); nil ; end
-      @url_helper = Object.new
-      @connection = Connection.new @url_helper, api_client
+  class MockApiClient
+    def get_urls
+      @get_urls ||= []
     end
 
-    it "returns an empty array if nil from api for rewards" do
-      def @url_helper.rewards; nil; end
-      rewards = @connection.rewards
-      assert_equal [], rewards
+    def get_block_values
+      @get_block_values ||= []
     end
 
-    it "returns an empty array if nil from api for transactions" do
-      def @url_helper.transactions; nil; end
-      transactions = @connection.transactions
-      assert_equal [], transactions
+    def get url, block
+      get_urls << url
+      get_block_values << block.call
+      :mock_api_client_get_return
     end
 
-    it "returns an empty array if nil from api for cards" do
-      def @url_helper.cards; nil; end
-      cards = @connection.cards
-      assert_equal [], cards
+    def post_urls
+      @post_urls ||= []
     end
 
-    it "returns an empty hash if nil from api for activity" do
-      def @url_helper.activity; nil; end
-      activity = @connection.activity
-      assert_kind_of Hash, activity
+    def post_options
+      @post_options ||= []
     end
 
-    it "returns an empty hash if nil from api for reward details" do
-      def @url_helper.reward(id_param); nil; end
-      reward = @connection.reward_detail 12
-      assert_kind_of Hash, reward
+    def post_block_values
+      @post_block_values ||= []
     end
 
-    it "returns an empty hash if nil from api for transaction details" do
-      def @url_helper.transaction(id_param); nil; end
-      transaction = @connection.transaction_detail 12
-      assert_kind_of Hash, transaction
+    def post url, options, block
+      post_urls << url
+      post_options << options
+      post_block_values << block.call
+      :mock_api_client_post_return
     end
-
-    it "returns an empty hash if nil from api for card details" do
-      def @url_helper.card(id_param); nil; end
-      card = @connection.card_detail 12
-      assert_kind_of Hash, card
-    end
-
   end
 
-  describe "API operation" do
-    before do
-      @mock_api_client = MiniTest::Mock.new
-      @mock_url_helper = MiniTest::Mock.new
-      @mock_result_parser = MiniTest::Mock.new
-      @connection = Connection.new @mock_url_helper, @mock_api_client, @mock_result_parser
-      @expected = Object.new
+  describe "connection" do
+    let(:url_helper) { Minitest::Mock.new }
+    let(:api_client) { MockApiClient.new }
+    subject() { Connection.new url_helper, api_client }
+
+    describe "rewards" do
+      before do
+        url_helper.expect(:rewards, :url_return)
+      end
+
+      it "uses the rewards URL" do
+        subject.rewards
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.rewards
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty array" do
+        subject.rewards
+        api_client.get_block_values.must_include "[]"
+      end
     end
 
-    after do
-      @mock_api_client.verify
-      @mock_url_helper.verify
-      @mock_result_parser.verify
+    describe "transactins" do
+      before do
+        url_helper.expect(:transactions, :url_return)
+      end
+
+      it "uses the transactions URL" do
+        subject.transactions
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.transactions
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty array" do
+        subject.transactions
+        api_client.get_block_values.must_include "[]"
+      end
     end
 
-    it "return an array of rewards" do
-      @mock_url_helper.expect :rewards, "rewards1"
-      @mock_api_client.expect :get, "rewards2", ["rewards1"]
-      @mock_result_parser.expect :parse, [@expected], ["rewards2"]
-      rewards = @connection.rewards
-      assert_equal [@expected], rewards
+    describe "cards" do
+      before do
+        url_helper.expect(:cards, :url_return)
+      end
+
+      it "uses the cards URL" do
+        subject.cards
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.cards
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty array" do
+        subject.cards
+        api_client.get_block_values.must_include "[]"
+      end
     end
 
-    it "return an array of transactions" do
-      @mock_url_helper.expect :transactions, "transactions1"
-      @mock_api_client.expect :get, "transactions2", ["transactions1"]
-      @mock_result_parser.expect :parse, [@expected], ["transactions2"]
-      transactions = @connection.transactions
-      assert_equal [@expected], transactions
+    describe "activity" do
+      before do
+        url_helper.expect(:activity, :url_return)
+      end
+
+      it "uses the activity URL" do
+        subject.activity
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.activity
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty hash" do
+        subject.activity
+        api_client.get_block_values.must_include "{}"
+      end
     end
 
-    it "return an array of cards" do
-      @mock_url_helper.expect :cards, "cards1"
-      @mock_api_client.expect :get, "cards2", ["cards1"]
-      @mock_result_parser.expect :parse, [@expected], ["cards2"]
-      cards = @connection.cards
-      assert_equal [@expected], cards
+    describe "reward_detail" do
+      before do
+        url_helper.expect(:reward, :url_return, [12])
+      end
+
+      it "uses the reward URL" do
+        subject.reward_detail(12)
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.reward_detail(12)
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty hash" do
+        subject.reward_detail(12)
+        api_client.get_block_values.must_include "{}"
+      end
     end
 
-    it "return a hash of activity" do
-      @mock_url_helper.expect :activity, "activity1"
-      @mock_api_client.expect :get, "activity2", ["activity1"]
-      @mock_result_parser.expect :parse, @expected, ["activity2"]
-      activity = @connection.activity
-      assert_equal @expected, activity
+    describe "transaction_detail" do
+      before do
+        url_helper.expect(:transaction, :url_return, [12])
+      end
+
+      it "uses the transaction URL" do
+        subject.transaction_detail(12)
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.transaction_detail(12)
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty hash" do
+        subject.transaction_detail(12)
+        api_client.get_block_values.must_include "{}"
+      end
     end
 
-    it "returns what reward details api reward detail" do
-      @mock_url_helper.expect :reward, "reward1", [12]
-      @mock_api_client.expect :get, "reward2", ["reward1"]
-      @mock_result_parser.expect :parse, @expected, ["reward2"]
-      reward = @connection.reward_detail 12
-      assert_equal @expected, reward
+    describe "card_detail" do
+      before do
+        url_helper.expect(:card, :url_return, [12])
+      end
+
+      it "uses the card URL" do
+        subject.card_detail(12)
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.card_detail(12)
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty hash" do
+        subject.card_detail(12)
+        api_client.get_block_values.must_include "{}"
+      end
     end
 
-    it "returns what transaction details api transaction detail" do
-      @mock_url_helper.expect :transaction, "transaction1", [12]
-      @mock_api_client.expect :get, "transaction2", ["transaction1"]
-      @mock_result_parser.expect :parse, @expected, ["transaction2"]
-      transaction = @connection.transaction_detail 12
-      assert_equal @expected, transaction
-    end
+    describe "register_user" do
+      before do
+        url_helper.expect(:create_user, :url_return)
+      end
 
-    it "returns what card details api card detail" do
-      @mock_url_helper.expect :card, "card1", [12]
-      @mock_api_client.expect :get, "card2", ["card1"]
-      @mock_result_parser.expect :parse, @expected, ["card2"]
-      card = @connection.card_detail 12
-      assert_equal @expected, card
-    end
+      it "uses the create_user URL" do
+        subject.register_user
+        url_helper.verify
+        api_client.post_urls.must_include :url_return
+      end
 
-  end
+      it "calls post on the API client" do
+        results = subject.register_user
+        results.must_equal :mock_api_client_post_return
+      end
 
-  describe "defaults to JSON parser" do
-    before do
-      @url_helper = Object.new
-      @api_client = Object.new
-      @connection = Connection.new(@url_helper, @api_client)
-      @expected = { "foo" => "bar" }
-    end
+      it "defaults to empty hash" do
+        subject.register_user
+        api_client.post_block_values.must_include "{}"
+      end
 
-    it "should use the JSON class for default parser" do
-      assert_equal JSON, @connection.result_parser
-    end
-
-    it "returns an array of rewards" do
-      def @url_helper.rewards; "rewards1"; end
-      def @api_client.get(path); %q![ {"foo": "bar"} ]!; end
-
-      result = @connection.rewards
-
-      assert_equal [@expected], result
-    end
-
-    it "returns an array of transactions" do
-      def @url_helper.transactions; "transactions1"; end
-      def @api_client.get(path); %q![ {"foo": "bar"} ]!; end
-
-      result = @connection.transactions
-
-      assert_equal [@expected], result
-    end
-
-    it "returns an array of cards" do
-      def @url_helper.cards; "cards1"; end
-      def @api_client.get(path); %q![ {"foo": "bar"} ]!; end
-
-      result = @connection.cards
-
-      assert_equal [@expected], result
-    end
-
-    it "returns an hash of activity" do
-      def @url_helper.activity; "activity1"; end
-      def @api_client.get(path); %q! {"foo": "bar"} !; end
-
-      result = @connection.activity
-
-      assert_equal @expected, result
+      it "wraps options in a 'consumer' hash for the API post" do
+        options = Object.new
+        subject.register_user options
+        consumer_hash = { :consumer => options }
+        api_client.post_options.must_include consumer_hash
+      end
     end
 
   end
