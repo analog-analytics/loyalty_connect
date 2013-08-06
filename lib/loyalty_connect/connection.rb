@@ -45,9 +45,8 @@ module LoyaltyConnect
       api_client.get(url_helper.card(id_param), Default_hash_result)
     end
 
-    def register_user options={}
-      sent_options = { :consumer => options }
-      api_client.post(url_helper.create_user, sent_options, Default_hash_result)
+    def register_user
+      api_client.post(url_helper.create_user, {}, Default_hash_result)
     end
 
     private
