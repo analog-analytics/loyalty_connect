@@ -6,8 +6,7 @@ module LoyaltyConnect
 
     describe "standard operation" do
       before do
-        consumer = lambda { 18 }
-        @url_helper = UrlHelper.new consumer
+        @url_helper = UrlHelper.new 18, true
       end
 
       it "creates rewards URLs" do
