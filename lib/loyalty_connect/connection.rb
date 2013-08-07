@@ -1,6 +1,8 @@
 module LoyaltyConnect
   class Connection
 
+    DEFAULT_ARRAY_RESULT = "[]"
+    DEFAULT_HASH_RESULT = "{}"
 
     def initialize url_helper, api_client
       @url_helper = url_helper
@@ -9,42 +11,63 @@ module LoyaltyConnect
 
     attr_reader :url_helper, :api_client
 
+    def exist?
+      found = true
+      get(url_helper.show, DEFAULT_HASH_RESULT) do |error|
+        found = false
+      end
+      found
+    end
+
     def rewards
-      api_client.get(url_helper.rewards, Default_array_result)
+      get url_helper.rewards, DEFAULT_ARRAY_RESULT
     end
 
     def transactions
-      api_client.get(url_helper.transactions, Default_array_result)
+      get url_helper.transactions, DEFAULT_ARRAY_RESULT
     end
 
     def cards
-      api_client.get(url_helper.cards, Default_array_result)
+      get url_helper.cards, DEFAULT_ARRAY_RESULT
     end
 
     def activity
-      api_client.get(url_helper.activity, Default_hash_result)
+      get url_helper.activity, DEFAULT_HASH_RESULT
     end
 
     def reward_detail id_param
-      api_client.get(url_helper.reward(id_param), Default_hash_result)
+      get url_helper.reward(id_param), DEFAULT_HASH_RESULT
     end
 
     def transaction_detail id_param
-      api_client.get(url_helper.transaction(id_param), Default_hash_result)
+      get url_helper.transaction(id_param), DEFAULT_HASH_RESULT
     end
 
     def card_detail id_param
-      api_client.get(url_helper.card(id_param), Default_hash_result)
+      get url_helper.card(id_param), DEFAULT_HASH_RESULT
     end
 
     def register_user
-      api_client.post(url_helper.create_user, {}, Default_hash_result)
+      post url_helper.create_user, {}, DEFAULT_HASH_RESULT
     end
 
     private
 
-    Default_array_result = lambda { '[]' }
-    Default_hash_result = lambda { '{}' }
+    def get(url, not_found_value)
+      api_client.get(url) do |error|
+        yield error if block_given?
+        raise unless error.message.include?('404')
+        not_found_value
+      end
+    end
+
+    def post(url, params, not_found_value)
+      api_client.post(url, params) do |error|
+        yield error if block_given?
+        raise unless error.message.include?('404')
+        not_found_value
+      end
+    end
 
   end
 end

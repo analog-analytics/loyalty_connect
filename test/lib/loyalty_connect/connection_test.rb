@@ -11,9 +11,10 @@ module LoyaltyConnect
       @get_block_values ||= []
     end
 
-    def get url, block
+    def get url, &block
       get_urls << url
-      get_block_values << block.call
+      error = LoyaltyConnect.error_for "404"
+      get_block_values << block.call(error)
       :mock_api_client_get_return
     end
 
@@ -29,12 +30,19 @@ module LoyaltyConnect
       @post_block_values ||= []
     end
 
-    def post url, options, block
+    def post url, options, &block
       post_urls << url
       post_options << options
-      post_block_values << block.call
+      error = LoyaltyConnect.error_for "404"
+      post_block_values << block.call(error)
       :mock_api_client_post_return
     end
+  end
+
+  def self.error_for message
+    Class.new do
+      define_method(:message) { message }
+    end.new
   end
 
   describe "connection" do
@@ -216,14 +224,41 @@ module LoyaltyConnect
         subject.register_user
         api_client.post_block_values.must_include "{}"
       end
+    end
+  end
 
-      it "wraps options in a 'consumer' hash for the API post" do
-        options = Object.new
-        subject.register_user options
-        consumer_hash = { :consumer => options }
-        api_client.post_options.must_include consumer_hash
-      end
+  describe "exist?" do
+    let(:url_helper) { Minitest::Mock.new }
+    let(:api_client) do
+      Class.new do
+        attr_accessor :should_be_found
+        def get _, &block
+          error = LoyaltyConnect.error_for "404"
+          block.call(error) unless should_be_found
+          :exist_get_response
+        end
+      end.new
+    end
+    subject() { Connection.new url_helper, api_client }
+
+    before do
+      url_helper.expect(:show, :show_return)
     end
 
+    it "uses the show url" do
+      subject.exist?
+      url_helper.verify
+    end
+
+    it "returns true if the consumer exists" do
+      api_client.should_be_found = true
+      assert subject.exist?
+    end
+
+    it "returns false if the consumer does not exists" do
+      api_client.should_be_found = false
+      refute subject.exist?
+    end
   end
+
 end
