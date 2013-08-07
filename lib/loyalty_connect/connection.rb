@@ -1,14 +1,6 @@
 module LoyaltyConnect
   class Connection
 
-    class << self
-      def create consumer_id, options={}
-        url_helper = UrlHelper.new(consumer_id)
-        oauth_wrapper = OauthWrapper.new(options)
-        api_client = ParsedApiClient.new(oauth_wrapper)
-        Connection.new url_helper, api_client
-      end
-    end
 
     def initialize url_helper, api_client
       @url_helper = url_helper
