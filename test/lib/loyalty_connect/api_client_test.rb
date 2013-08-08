@@ -29,7 +29,7 @@ module LoyaltyConnect
       end.new
       stub_oauth_wrapper = create_oauth_wrapper(stub_oauth_token)
       client = ApiClient.new stub_oauth_wrapper
-      assert_raises OAuth2::HTTPError do
+      assert_raises OAuth2::Error do
         client.get "blah"
       end
     end
@@ -70,7 +70,14 @@ module LoyaltyConnect
     end
 
     def create_error_for(code, message="")
-      OAuth2::HTTPError.new("#{code}: #{message}")
+      stub_response = Class.new do
+        attr_accessor :error, :parsed, :body
+      end.new
+      stub_response.parsed = {
+        'error' => code,
+        'error_description' => message
+      }
+      OAuth2::Error.new(stub_response)
     end
 
   end
