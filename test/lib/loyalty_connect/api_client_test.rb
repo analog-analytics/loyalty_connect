@@ -6,8 +6,12 @@ module LoyaltyConnect
 
     it "should return what the api returns converted to a string and trimmed" do
       stub_oauth_token = Class.new do
-        def self.get _, _, _
-          :something
+        def self.get *_
+          Class.new do
+            def to_s
+              "       something        "
+            end
+          end.new
         end
       end
       stub_oauth_wrapper = create_oauth_wrapper(stub_oauth_token)
@@ -17,11 +21,12 @@ module LoyaltyConnect
     end
 
     it "should raise errors by default" do
+      cache = self
       stub_oauth_token = Class.new do
-        def self.get _, _, _
-          raise OAuth2::HTTPError, "500"
+        define_method(:get) do |*_|
+          raise cache.create_error_for(500)
         end
-      end
+      end.new
       stub_oauth_wrapper = create_oauth_wrapper(stub_oauth_token)
       client = ApiClient.new stub_oauth_wrapper
       assert_raises OAuth2::HTTPError do
@@ -30,22 +35,23 @@ module LoyaltyConnect
     end
 
     it "should include the version header" do
-      mock_token = Minitest::Mock.new
-      mock_token.expect :get, nil do |_, _, headers|
-        assert_includes headers.keys, 'X-API-Version'
-        assert_equal '1.0.0', headers['X-API-Version']
-      end
-      stub_oauth_wrapper = create_oauth_wrapper(mock_token)
+      cache = self
+      stub_oauth_token = Class.new do
+        define_method(:get) do |_, _, headers|
+          cache.assert_includes headers.keys, 'X-API-Version'
+          cache.assert_equal '1.0.0', headers['X-API-Version']
+        end
+      end.new
+      stub_oauth_wrapper = create_oauth_wrapper(stub_oauth_token)
       client = ApiClient.new stub_oauth_wrapper
       result = client.get "blah"
-      mock_token.verify
     end
 
     it "should call error handler on errors" do
       yield_args = []
-      expected_exception = OAuth2::HTTPError.new("500")
+      expected_exception = create_error_for(500, "bad stuff")
       stub_oauth_token = Class.new do
-        define_method(:get) do |_,_,_|
+        define_method(:get) do |*_|
           raise expected_exception
         end
       end.new
@@ -62,5 +68,10 @@ module LoyaltyConnect
         define_method(:oauth_token) { token }
       end.new
     end
+
+    def create_error_for(code, message="")
+      OAuth2::HTTPError.new("#{code}: #{message}")
+    end
+
   end
 end
