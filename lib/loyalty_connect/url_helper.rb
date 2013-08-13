@@ -58,6 +58,10 @@ module LoyaltyConnect
       path consumer_id, 'credit_cards', 'new'
     end
 
+    def create_credit_card
+      path consumer_id, 'credit_cards'
+    end
+
     private
 
     def path *segments

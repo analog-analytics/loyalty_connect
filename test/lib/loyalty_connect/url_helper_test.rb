@@ -25,6 +25,10 @@ module LoyaltyConnect
         assert_equal "/api/consumers/18/credit_cards/new?translate=1", @url_helper.new_credit_card
       end
 
+      it "creates create credit cards URLs" do
+        assert_equal "/api/consumers/18/credit_cards?translate=1", @url_helper.create_credit_card
+      end
+
       it "creates reward detail URLs" do
         assert_equal "/api/consumers/18/rewards/15?translate=1", @url_helper.reward(15)
       end
