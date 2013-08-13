@@ -55,6 +55,10 @@ module LoyaltyConnect
       get url_helper.new_credit_card, DEFAULT_HASH_RESULT
     end
 
+    def create_credit_card params
+      post url_helper.create_credit_card, params, DEFAULT_HASH_RESULT
+    end
+
     private
 
     def get(url, not_found_value)
