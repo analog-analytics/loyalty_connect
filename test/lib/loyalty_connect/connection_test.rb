@@ -225,6 +225,28 @@ module LoyaltyConnect
         api_client.post_block_values.must_include "{}"
       end
     end
+
+    describe "new_credit_card" do
+      before do
+        url_helper.expect(:new_credit_card, :url_return)
+      end
+
+      it "uses the new_credit_card URL" do
+        subject.new_credit_card
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.new_credit_card
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty hash" do
+        subject.new_credit_card
+        api_client.get_block_values.must_include "{}"
+      end
+    end
   end
 
   describe "exist?" do
