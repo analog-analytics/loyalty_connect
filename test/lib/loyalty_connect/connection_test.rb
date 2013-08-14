@@ -225,6 +225,57 @@ module LoyaltyConnect
         api_client.post_block_values.must_include "{}"
       end
     end
+
+    describe "new_credit_card" do
+      before do
+        url_helper.expect(:new_credit_card, :url_return)
+      end
+
+      it "uses the new_credit_card URL" do
+        subject.new_credit_card
+        url_helper.verify
+        api_client.get_urls.must_include :url_return
+      end
+
+      it "calls get on the API client" do
+        results = subject.new_credit_card
+        results.must_equal :mock_api_client_get_return
+      end
+
+      it "defaults to empty hash" do
+        subject.new_credit_card
+        api_client.get_block_values.must_include "{}"
+      end
+    end
+
+    describe "create_credit_card" do
+      let(:params) { Object.new }
+
+      before do
+        url_helper.expect(:create_credit_card, :url_return)
+      end
+
+      it "uses the create_credit_card URL" do
+        subject.create_credit_card(params)
+        url_helper.verify
+        api_client.post_urls.must_include :url_return
+      end
+
+      it "calls post on the API client" do
+        results = subject.create_credit_card(params)
+        results.must_equal :mock_api_client_post_return
+      end
+
+      it "defaults to empty hash" do
+        subject.create_credit_card(params)
+        api_client.post_block_values.must_include "{}"
+      end
+
+      it "pass params to the API" do
+        subject.create_credit_card(params)
+        api_client.post_options.must_include params
+      end
+    end
   end
 
   describe "exist?" do

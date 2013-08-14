@@ -54,8 +54,12 @@ module LoyaltyConnect
       end
     end
 
-    def new_credit_card_hash
-      path consumer_id, 'credit_cards', 'new_hash'
+    def new_credit_card
+      path consumer_id, 'credit_cards', 'new'
+    end
+
+    def create_credit_card
+      path consumer_id, 'credit_cards'
     end
 
     private
