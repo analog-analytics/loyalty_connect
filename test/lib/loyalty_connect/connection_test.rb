@@ -37,6 +37,27 @@ module LoyaltyConnect
       post_block_values << block.call(error)
       :mock_api_client_post_return
     end
+
+    def delete_urls
+      @delete_urls ||= []
+    end
+
+    def delete_options
+      @delete_options ||= []
+    end
+
+    def delete_block_values
+      @delete_block_values ||= []
+    end
+
+    def delete url, options, &block
+      delete_urls << url
+      delete_options << options
+      error = LoyaltyConnect.error_for "404"
+      delete_block_values << block.call(error)
+      :mock_api_client_delete_return
+    end
+
   end
 
   def self.error_for message
@@ -226,6 +247,28 @@ module LoyaltyConnect
       end
     end
 
+    describe "delete_user" do
+      before do
+        url_helper.expect(:delete_user, :url_return)
+      end
+
+      it "uses the delete_user URL" do
+        subject.delete_user
+        url_helper.verify
+        api_client.delete_urls.must_include :url_return
+      end
+
+      it "calls delete on the API client" do
+        results = subject.delete_user
+        results.must_equal :mock_api_client_delete_return
+      end
+
+      it "defaults to empty hash" do
+        subject.delete_user
+        api_client.delete_block_values.must_include "{}"
+      end
+    end
+
     describe "new_credit_card" do
       before do
         url_helper.expect(:new_credit_card, :url_return)
@@ -274,6 +317,35 @@ module LoyaltyConnect
       it "pass params to the API" do
         subject.create_credit_card(params)
         api_client.post_options.must_include params
+      end
+    end
+
+    describe "delete_credit_card" do
+      let(:params) { Object.new }
+
+      before do
+        url_helper.expect(:delete_credit_card, :url_return)
+      end
+
+      it "uses the delete_credit_card URL" do
+        subject.delete_credit_card(params)
+        url_helper.verify
+        api_client.delete_urls.must_include :url_return
+      end
+
+      it "calls delete on the API client" do
+        results = subject.delete_credit_card(params)
+        results.must_equal :mock_api_client_delete_return
+      end
+
+      it "defaults to empty hash" do
+        subject.delete_credit_card(params)
+        api_client.delete_block_values.must_include "{}"
+      end
+
+      it "pass params to the API" do
+        subject.delete_credit_card(params)
+        api_client.delete_options.must_include params
       end
     end
   end

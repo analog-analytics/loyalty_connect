@@ -51,12 +51,20 @@ module LoyaltyConnect
       post url_helper.create_user, {}, DEFAULT_HASH_RESULT
     end
 
+    def delete_user
+      delete url_helper.delete_user, {}, DEFAULT_HASH_RESULT
+    end
+
     def new_credit_card
       get url_helper.new_credit_card, DEFAULT_HASH_RESULT
     end
 
     def create_credit_card params
       post url_helper.create_credit_card, params, DEFAULT_HASH_RESULT
+    end
+
+    def delete_credit_card credit_card_id
+      delete url_helper.delete_credit_card, credit_card_id, DEFAULT_HASH_RESULT
     end
 
     private
@@ -71,6 +79,14 @@ module LoyaltyConnect
 
     def post(url, params, not_found_value)
       api_client.post(url, params) do |error|
+        yield error if block_given?
+        raise unless error.message.include?('404')
+        not_found_value
+      end
+    end
+
+    def delete(url, params, not_found_value)
+      api_client.delete(url, params) do |error|
         yield error if block_given?
         raise unless error.message.include?('404')
         not_found_value
