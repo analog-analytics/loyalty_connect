@@ -9,20 +9,26 @@ module LoyaltyConnect
     attr_reader :oauth_wrapper
 
     def get url, &error_handler
-      handle_with_care(error_handler) do
-        oauth_wrapper.oauth_token.get(url, {}, headers)
-      end
+      call_api :get, url, {}, &error_handler
     end
 
-    def post url, options, &error_handler
-      handle_with_care(error_handler) do
-        oauth_wrapper.oauth_token.post(url, options, headers)
-      end
+    def post url, params, &error_handler
+      call_api :post, url, params, &error_handler
+    end
+
+    def delete url, params, &error_handler
+      call_api :delete, url, params, &error_handler
     end
 
     private
 
     RaisingErrorHandler = lambda { |e| raise e }
+
+    def call_api method, url, params, &error_handler
+      handle_with_care(error_handler) do
+        oauth_wrapper.oauth_token.send method, url, params, headers
+      end
+    end
 
     def handle_with_care error_handler, &block
       error_handler ||= RaisingErrorHandler
