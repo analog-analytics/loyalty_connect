@@ -324,7 +324,7 @@ module LoyaltyConnect
       let(:params) { Object.new }
 
       before do
-        url_helper.expect(:delete_credit_card, :url_return)
+        url_helper.expect(:delete_credit_card, :url_return, [params])
       end
 
       it "uses the delete_credit_card URL" do
@@ -345,7 +345,7 @@ module LoyaltyConnect
 
       it "pass params to the API" do
         subject.delete_credit_card(params)
-        api_client.delete_options.must_include params
+        api_client.delete_options.must_include Hash.new
       end
     end
   end
