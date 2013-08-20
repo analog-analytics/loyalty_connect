@@ -64,7 +64,7 @@ module LoyaltyConnect
     end
 
     def delete_credit_card credit_card_id
-      delete url_helper.delete_credit_card, credit_card_id, DEFAULT_HASH_RESULT
+      delete url_helper.delete_credit_card(credit_card_id), {}, DEFAULT_HASH_RESULT
     end
 
     private
