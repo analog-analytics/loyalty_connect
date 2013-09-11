@@ -226,25 +226,32 @@ module LoyaltyConnect
     end
 
     describe "register_user" do
+      let(:params) { Object.new }
       before do
         url_helper.expect(:create_user, :url_return)
       end
 
       it "uses the create_user URL" do
-        subject.register_user
+        subject.register_user(params)
         url_helper.verify
         api_client.post_urls.must_include :url_return
       end
 
       it "calls post on the API client" do
-        results = subject.register_user
+        results = subject.register_user(params)
         results.must_equal :mock_api_client_post_return
       end
 
       it "defaults to empty hash" do
-        subject.register_user
+        subject.register_user(params)
         api_client.post_block_values.must_include "{}"
       end
+
+      it "pass params to the API" do
+        subject.register_user(params)
+        api_client.post_options.must_include params
+      end
+
     end
 
     describe "delete_user" do

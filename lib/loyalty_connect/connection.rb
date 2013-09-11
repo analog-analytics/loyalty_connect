@@ -47,8 +47,8 @@ module LoyaltyConnect
       get url_helper.card(id_param), DEFAULT_HASH_RESULT
     end
 
-    def register_user
-      post url_helper.create_user, {}, DEFAULT_HASH_RESULT
+    def register_user params
+      post url_helper.create_user, params, DEFAULT_HASH_RESULT
     end
 
     def delete_user
