@@ -13,9 +13,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://www.analoganalytics.com/"
   spec.license       = "Private"
 
-  spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.files         = `git ls-files`.split($/).reject { |x| x.start_with?("bin/") } - %w{.gitignore Gemfile.lock}
+  spec.executables   = []
+  spec.test_files    = spec.files.reject { |x| x.start_with?("test/") }
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "oauth2", "0.4.1"

@@ -89,7 +89,7 @@ module LoyaltyConnect
 
       it "defaults to empty array" do
         subject.rewards
-        api_client.get_block_values.must_include "[]"
+        api_client.get_block_values.must_include "{}"
       end
     end
 
@@ -111,7 +111,7 @@ module LoyaltyConnect
 
       it "defaults to empty array" do
         subject.transactions
-        api_client.get_block_values.must_include "[]"
+        api_client.get_block_values.must_include "{}"
       end
     end
 
@@ -133,7 +133,7 @@ module LoyaltyConnect
 
       it "defaults to empty array" do
         subject.cards
-        api_client.get_block_values.must_include "[]"
+        api_client.get_block_values.must_include "{}"
       end
     end
 
