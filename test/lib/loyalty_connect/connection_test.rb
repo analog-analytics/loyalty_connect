@@ -77,17 +77,19 @@ module LoyaltyConnect
       end
 
       it "uses the rewards URL" do
+        Model::Reward.stubs(:from_paged_json)
         subject.rewards
         url_helper.verify
         api_client.get_urls.must_include :url_return
       end
 
       it "calls get on the API client" do
-        results = subject.rewards
-        results.must_equal :mock_api_client_get_return
+        Model::Reward.expects(:from_paged_json).with(:mock_api_client_get_return)
+        subject.rewards
       end
 
       it "defaults to empty array" do
+        Model::Reward.stubs(:from_paged_json)
         subject.rewards
         api_client.get_block_values.must_include "{}"
       end
@@ -99,17 +101,19 @@ module LoyaltyConnect
       end
 
       it "uses the transactions URL" do
+        Model::Transaction.stubs(:from_paged_json)
         subject.transactions
         url_helper.verify
         api_client.get_urls.must_include :url_return
       end
 
       it "calls get on the API client" do
-        results = subject.transactions
-        results.must_equal :mock_api_client_get_return
+        Model::Transaction.expects(:from_paged_json).with(:mock_api_client_get_return)
+        subject.transactions
       end
 
       it "defaults to empty array" do
+        Model::Transaction.stubs(:from_paged_json)
         subject.transactions
         api_client.get_block_values.must_include "{}"
       end
@@ -121,17 +125,19 @@ module LoyaltyConnect
       end
 
       it "uses the cards URL" do
+        Model::Card.stubs(:from_paged_json)
         subject.cards
         url_helper.verify
         api_client.get_urls.must_include :url_return
       end
 
       it "calls get on the API client" do
-        results = subject.cards
-        results.must_equal :mock_api_client_get_return
+        Model::Card.expects(:from_paged_json).with(:mock_api_client_get_return)
+        subject.cards
       end
 
       it "defaults to empty array" do
+        Model::Card.stubs(:from_paged_json)
         subject.cards
         api_client.get_block_values.must_include "{}"
       end
@@ -143,84 +149,20 @@ module LoyaltyConnect
       end
 
       it "uses the activity URL" do
+        Model::Activity.stubs(:from_paged_json)
         subject.activity
         url_helper.verify
         api_client.get_urls.must_include :url_return
       end
 
       it "calls get on the API client" do
-        results = subject.activity
-        results.must_equal :mock_api_client_get_return
-      end
-
-      it "defaults to empty hash" do
+        Model::Activity.expects(:from_json_hash).with(:mock_api_client_get_return)
         subject.activity
-        api_client.get_block_values.must_include "{}"
-      end
-    end
-
-    describe "reward_detail" do
-      before do
-        url_helper.expect(:reward, :url_return, [12])
-      end
-
-      it "uses the reward URL" do
-        subject.reward_detail(12)
-        url_helper.verify
-        api_client.get_urls.must_include :url_return
-      end
-
-      it "calls get on the API client" do
-        results = subject.reward_detail(12)
-        results.must_equal :mock_api_client_get_return
       end
 
       it "defaults to empty hash" do
-        subject.reward_detail(12)
-        api_client.get_block_values.must_include "{}"
-      end
-    end
-
-    describe "transaction_detail" do
-      before do
-        url_helper.expect(:transaction, :url_return, [12])
-      end
-
-      it "uses the transaction URL" do
-        subject.transaction_detail(12)
-        url_helper.verify
-        api_client.get_urls.must_include :url_return
-      end
-
-      it "calls get on the API client" do
-        results = subject.transaction_detail(12)
-        results.must_equal :mock_api_client_get_return
-      end
-
-      it "defaults to empty hash" do
-        subject.transaction_detail(12)
-        api_client.get_block_values.must_include "{}"
-      end
-    end
-
-    describe "card_detail" do
-      before do
-        url_helper.expect(:card, :url_return, [12])
-      end
-
-      it "uses the card URL" do
-        subject.card_detail(12)
-        url_helper.verify
-        api_client.get_urls.must_include :url_return
-      end
-
-      it "calls get on the API client" do
-        results = subject.card_detail(12)
-        results.must_equal :mock_api_client_get_return
-      end
-
-      it "defaults to empty hash" do
-        subject.card_detail(12)
+        Model::Activity.stubs(:from_paged_json)
+        subject.activity
         api_client.get_block_values.must_include "{}"
       end
     end
@@ -232,22 +174,25 @@ module LoyaltyConnect
       end
 
       it "uses the create_user URL" do
+        Model::CreateUserResult.stubs(:from_json_hash)
         subject.register_user(params)
         url_helper.verify
         api_client.post_urls.must_include :url_return
       end
 
       it "calls post on the API client" do
-        results = subject.register_user(params)
-        results.must_equal :mock_api_client_post_return
+        Model::CreateUserResult.expects(:from_json_hash).with(:mock_api_client_post_return)
+        subject.register_user(params)
       end
 
       it "defaults to empty hash" do
+        Model::CreateUserResult.stubs(:from_json_hash)
         subject.register_user(params)
         api_client.post_block_values.must_include "{}"
       end
 
       it "pass params to the API" do
+        Model::CreateUserResult.stubs(:from_json_hash)
         subject.register_user(params)
         api_client.post_options.must_include params
       end
