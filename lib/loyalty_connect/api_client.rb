@@ -34,7 +34,7 @@ module LoyaltyConnect
       error_handler ||= RaisingErrorHandler
       result = block.call
       String(result).strip
-    rescue OAuth2::HTTPError => e
+    rescue OAuth2::Error => e
       error_handler.call(e)
     end
 

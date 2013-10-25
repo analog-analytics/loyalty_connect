@@ -29,8 +29,8 @@ module LoyaltyConnect
       client_class.new(
         client_id,
         client_secret,
-        :site => server,
-        :access_token_path => "/oauth/token")
+        :site => server
+      )
     end
 
     def password_workflow
@@ -38,9 +38,7 @@ module LoyaltyConnect
     end
 
     def create_oauth_token
-      token = password_workflow.get_access_token(username, password)
-      token.token_param = 'access_token'
-      token
+      password_workflow.get_token(username, password)
     end
 
   end

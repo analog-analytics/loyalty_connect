@@ -11,22 +11,21 @@ module LoyaltyConnect
         'username'      => "username",
         'password'      => "password"
       }
-      mock_token = MiniTest::Mock.new
-      mock_token.expect :token_param=, nil, ['access_token']
+      expected = Object.new
       mock_password_workflow = MiniTest::Mock.new
-      mock_password_workflow.expect :get_access_token, mock_token, ["username", "password"]
+      mock_password_workflow.expect :get_token, expected, ["username", "password"]
       mock_client = MiniTest::Mock.new
       mock_client.expect :password, mock_password_workflow
       mock_client_creator = MiniTest::Mock.new
-      mock_client_creator.expect :new, mock_client, ["client_id", "client_secret", :site => "server", :access_token_path => "/oauth/token"]
+      mock_client_creator.expect :new, mock_client, ["client_id", "client_secret", :site => "server"]
 
       wrapper = OauthWrapper.new configuration, mock_client_creator
-      wrapper.oauth_token
+      result_token = wrapper.oauth_token
 
       mock_client_creator.verify
       mock_client.verify
       mock_password_workflow.verify
-      mock_token.verify
+      assert_same expected, result_token
     end
 
   end
