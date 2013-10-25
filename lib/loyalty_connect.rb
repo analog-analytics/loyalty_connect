@@ -4,6 +4,8 @@ require "loyalty_connect/api_client"
 require "loyalty_connect/parsed_api_client"
 require "loyalty_connect/connection"
 require "loyalty_connect/oauth_wrapper"
+require "loyalty_connect/model"
+
 
 module LoyaltyConnect
   class << self

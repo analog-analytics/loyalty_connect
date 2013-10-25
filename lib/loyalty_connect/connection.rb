@@ -18,35 +18,23 @@ module LoyaltyConnect
     end
 
     def rewards
-      get url_helper.rewards
+      Model::Reward.from_paged_json(get(url_helper.rewards))
     end
 
     def transactions
-      get url_helper.transactions
+      Model::Transaction.from_paged_json(get(url_helper.transactions))
     end
 
     def cards
-      get url_helper.cards
+      Model::Card.from_paged_json(get(url_helper.cards))
     end
 
     def activity
-      get url_helper.activity
-    end
-
-    def reward_detail id_param
-      get url_helper.reward(id_param)
-    end
-
-    def transaction_detail id_param
-      get url_helper.transaction(id_param)
-    end
-
-    def card_detail id_param
-      get url_helper.card(id_param)
+      Model::Activity.from_json_hash(get(url_helper.activity))
     end
 
     def register_user params
-      post url_helper.create_user, params
+      Model::CreateUserResult.from_json_hash(post(url_helper.create_user, params))
     end
 
     def delete_user
